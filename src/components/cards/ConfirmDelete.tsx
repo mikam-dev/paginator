@@ -1,3 +1,4 @@
+"use client"
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -11,7 +12,20 @@ import {
 } from "@/components/ui/alert-dialog"
 import { X } from 'lucide-react'
 
-export function DeleteAlert() {
+import { deleteDocument } from "@/lib/helpers"
+
+interface ConfirmDeleteProps {
+	model: string;
+	id: string;
+	onDelete: () => void;
+}
+
+export function ConfirmDelete({ model, id, onDelete }: ConfirmDeleteProps) {
+
+	const handleDelete = () => {
+		deleteDocument(model, id)
+		onDelete()
+	}
 
 	return (
 		<AlertDialog>
@@ -20,14 +34,14 @@ export function DeleteAlert() {
 			</AlertDialogTrigger>
 			<AlertDialogContent>
 				<AlertDialogHeader>
-					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+					<AlertDialogTitle>Are you sure?</AlertDialogTitle>
 					<AlertDialogDescription>
 						This action cannot be undone. This will permanently delete this document.
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
 					<AlertDialogCancel>Cancel</AlertDialogCancel>
-					<AlertDialogAction className="bg-destructive text-destructive-foreground">Delete</AlertDialogAction>
+					<AlertDialogAction className="bg-destructive text-destructive-foreground" onClick={() => handleDelete()}>Delete</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>
 		</AlertDialog>
@@ -35,4 +49,4 @@ export function DeleteAlert() {
 	)
 }
 
-export default DeleteAlert
+export default ConfirmDelete

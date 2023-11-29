@@ -1,3 +1,5 @@
+"use client"
+import { useEffect, useState } from "react"
 import {
 	ChevronLeftIcon,
 	ChevronRightIcon,
@@ -6,45 +8,49 @@ import {
 } from "@radix-ui/react-icons"
 
 import { Button } from "@/components/ui/button"
+import { Input } from "../ui/input";
+import { set } from "mongoose";
 
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue
-} from "@/components/ui/select"
+interface PaginationProps {
+	currentPage: number;
+	totalPages: number;
+	pageChange: (page: number) => void;
+}
 
-export function Pagination() {
+export function Pagination({
+	currentPage,
+	totalPages,
+	pageChange,
+}: PaginationProps) {
+	const [search, setSearch] = useState("")
+
+	function handleSearch() {
+		if (search === "") {
+			return
+		}
+		if (Number(search) > totalPages) {
+			pageChange(totalPages)
+			setSearch("")
+			return
+		}
+		if (Number(search) < 1) {
+			pageChange(1)
+			setSearch("")
+			return
+		}
+		pageChange(Number(search))
+		setSearch("")
+	}
+
 	return (
 		<div className="flex items-center justify-between px-2">
 			<div className="flex items-center space-x-6 lg:space-x-8">
 				<div className="flex items-center space-x-2">
-					<p className="text-sm font-medium">Page size</p>
-					<Select
-						value={`${10}`}
-						onValueChange={(value) => {
-							Number(value)
-						}}
-					>
-						<SelectTrigger className="h-8 w-[70px]">
-							<SelectValue placeholder={10} />
-						</SelectTrigger>
-						<SelectContent side="top">
-							{[10, 20, 30, 40, 50].map((pageSize) => (
-								<SelectItem key={pageSize} value={`${pageSize}`}>
-									{pageSize}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-				</div>
-				<div className="flex items-center space-x-2">
 					<Button
 						variant="outline"
-						className="hidden h-8 w-8 p-0 lg:flex"
-						onClick={() => (0)}
-						disabled={!0}
+						className="hidden h-8 w-8 p-0 md:flex"
+						onClick={() => pageChange(1)}
+						disabled={currentPage === 1}
 					>
 						<span className="sr-only">Go to first page</span>
 						<DoubleArrowLeftIcon className="h-4 w-4" />
@@ -52,30 +58,48 @@ export function Pagination() {
 					<Button
 						variant="outline"
 						className="h-8 w-8 p-0"
-						onClick={() => ("")}
-						disabled={!""}
+						onClick={() => pageChange(currentPage - 1)}
+						disabled={currentPage === 1}
 					>
 						<span className="sr-only">Go to previous page</span>
 						<ChevronLeftIcon className="h-4 w-4" />
 					</Button>
+					<p className="flex items-center justify-center text-xs font-medium min-w-fit w-12">
+						{currentPage} of {totalPages}
+					</p>
 					<Button
 						variant="outline"
 						className="h-8 w-8 p-0"
-						onClick={() => ("")}
-						disabled={!""}
+						onClick={() => pageChange(currentPage + 1)}
+						disabled={currentPage === totalPages}
 					>
 						<span className="sr-only">Go to next page</span>
 						<ChevronRightIcon className="h-4 w-4" />
 					</Button>
 					<Button
 						variant="outline"
-						className="hidden h-8 w-8 p-0 lg:flex"
-						onClick={() => ((1) - 1)}
-						disabled={!((1) - 1)}
+						className="hidden h-8 w-8 p-0 md:flex"
+						onClick={() => pageChange(totalPages)}
+						disabled={currentPage === totalPages}
 					>
 						<span className="sr-only">Go to last page</span>
 						<DoubleArrowRightIcon className="h-4 w-4" />
 					</Button>
+				</div >
+				<div className="hidden items-center space-x-2 md:flex">
+					<Input
+						type="number"
+						min={1}
+						max={totalPages}
+						value={search}
+						onChange={(e) => setSearch(e.target.value)}
+						className="w-fit h-8"
+					/>
+					<Button
+						variant="outline"
+						className="h-8 w-fit px-2"
+						onClick={() => handleSearch()}
+					>Search</Button>
 				</div>
 			</div>
 		</div>

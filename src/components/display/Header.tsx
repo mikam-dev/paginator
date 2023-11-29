@@ -1,6 +1,6 @@
 "use client"
 import { BookOpen } from 'lucide-react'
-import { CreateDocForm } from '../forms/CreateDocForm'
+import { CreateDocForm } from '../forms/CreateDoc'
 import Link from 'next/link'
 
 export default function Header() {

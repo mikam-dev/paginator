@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google'
 import { ThemeProvider } from "@/components/theme-provider"
 import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { ConnectionIndicator } from '@/components/connection-indicator'
-import Header from '@/components/core/Header';
+import Header from '@/components/display/Header';
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {

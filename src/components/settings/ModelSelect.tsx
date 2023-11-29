@@ -1,4 +1,4 @@
-import React from 'react'
+"use client"
 import {
 	Select,
 	SelectContent,
@@ -7,17 +7,25 @@ import {
 	SelectValue,
 } from "@/components/ui/select"
 
-export function ModelSelect() {
+interface ModelSelectProps {
+	model: string;
+	onModelChange: (model: string) => void;
+}
 
+export function ModelSelect({ model, onModelChange }: ModelSelectProps) {
 	return (
-		<Select>
-			<SelectTrigger className="min-w-fit w-[50%] hover:bg-accent active:bg-accent">
-				<SelectValue placeholder="Select Model" />
+		<Select
+			value={model}
+			onValueChange={(value) => {
+				onModelChange(value);
+			}}>
+			<SelectTrigger className="min-w-fit w-[50%] hover:bg-accent active:bg-accent px-4 py-2">
+				<SelectValue placeholder={"Cases"} />
 			</SelectTrigger>
 			<SelectContent>
+				<SelectItem value="case">Cases</SelectItem>
 				<SelectItem value="user">Users</SelectItem>
 				<SelectItem value="organization">Organizations</SelectItem>
-				<SelectItem value="case">Cases</SelectItem>
 			</SelectContent>
 		</Select>
 	)
