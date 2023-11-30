@@ -53,7 +53,7 @@ export function CaseCard({ data, onDelete }: CaseCardProps) {
 				</div>
 			</CardContent>
 			<CardFooter className="py-4">
-				<Badge variant="default">Case</Badge>
+				<Badge variant="default">Case: {_id}</Badge>
 			</CardFooter>
 		</Card>
 	)

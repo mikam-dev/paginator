@@ -75,9 +75,6 @@ export default function Page() {
 
   function handleDelete() {
     setTotalDocuments(totalDocuments - 1)
-    toast({
-      description: `Document deleted successfully!`,
-    })
   }
 
   function rangeOfPage() {

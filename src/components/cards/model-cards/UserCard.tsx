@@ -48,7 +48,7 @@ export function UserCard({ data, onDelete }: UserCardProps) {
 				<p><strong>DoB:</strong> {dateOfBirth.toLocaleDateString()}</p>
 			</CardContent>
 			<CardFooter className="py-4">
-				<Badge variant="default">User</Badge>
+				<Badge variant="default">User: {_id}</Badge>
 			</CardFooter>
 		</Card>
 	)
