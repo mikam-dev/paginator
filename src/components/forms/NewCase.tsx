@@ -1,5 +1,4 @@
 "use client"
-
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
@@ -25,45 +24,44 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover"
 
+import { createDoc } from "@/lib/helpers"
+
 const formSchema = z.object({
-	owner: z.string(),
 	client: z.object({
-		given_name: z.string(),
-		family_name: z.string(),
+		given_name: z.string().min(2),
+		family_name: z.string().min(2),
 		email: z.string().email(),
-		phone: z.string(),
+		phone: z.string().min(2),
 		address: z.object({
-			line1: z.string(),
+			line1: z.string().min(2),
 			line2: z.string().optional(),
-			city: z.string(),
-			state: z.string(),
-			zip: z.string(),
+			city: z.string().min(2),
+			state: z.string().min(2),
+			zip: z.string().min(2),
 		}),
 	}),
 	incident: z.object({
 		date: z.date(),
 		address: z.object({
-			line1: z.string(),
+			line1: z.string().min(2),
 			line2: z.string().optional(),
-			city: z.string(),
-			state: z.string(),
-			zip: z.string(),
+			city: z.string().min(2),
+			state: z.string().min(2),
+			zip: z.string().min(2),
 		}),
-		details: z.string(),
+		details: z.string().min(2),
 	}),
 	recovery: z.object({
-		expected: z.number(),
-		actual: z.number(),
+		expected: z.number().gte(10000).lte(500000),
+		actual: z.number().gte(10000).lte(500000),
 		received: z.date(),
 	}),
 })
 
-export function NewCase() {
-	// 1. Define your form.
+export function NewCase({ formSubmit }: { formSubmit: () => void }) {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			owner: "",
 			client: {
 				given_name: "",
 				family_name: "",
@@ -89,39 +87,22 @@ export function NewCase() {
 				details: "",
 			},
 			recovery: {
-				expected: 0,
-				actual: 0,
+				expected: 10000,
+				actual: 10000,
 				received: new Date(),
 			},
 		},
 	})
 
-	// 2. Define a submit handler.
+
 	function onSubmit(values: z.infer<typeof formSchema>) {
-		// Do something with the form values.
-		// ✅ This will be type-safe and validated.
-		console.log(values)
+		createDoc("case", values)
+		formSubmit()
 	}
 
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-				<FormField
-					control={form.control}
-					name="owner"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Owner {"(organization)"}</FormLabel>
-							<FormControl>
-								<Input placeholder="Acme, Co." {...field} />
-							</FormControl>
-							<FormDescription>
-								This is the name of the owning organization.
-							</FormDescription>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
 				<FormField
 					control={form.control}
 					name="client.given_name"
@@ -371,7 +352,14 @@ export function NewCase() {
 						<FormItem>
 							<FormLabel>Expected Recovery</FormLabel>
 							<FormControl>
-								<Input type="number" {...field} />
+								<Input
+									type="number" {...field}
+									min={0}
+									maxLength={10}
+									onChange={(e) => {
+										const number = parseInt(e.target.value)
+										form.setValue("recovery.expected", number)
+									}} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -384,7 +372,14 @@ export function NewCase() {
 						<FormItem>
 							<FormLabel>Actual Recovery</FormLabel>
 							<FormControl>
-								<Input type="number" {...field} />
+								<Input
+									type="number" {...field}
+									min={0}
+									maxLength={10}
+									onChange={(e) => {
+										const number = parseInt(e.target.value)
+										form.setValue("recovery.actual", number)
+									}} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>

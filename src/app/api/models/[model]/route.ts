@@ -23,10 +23,10 @@ export async function GET(request: Request, { params }: { params: { model: strin
   // Apply date filters and pagination
   const queryFilters: Record<string, any> = {};
   if (olderThan) {
-    queryFilters.createdAt = { $lt: new Date(olderThan) };
+    queryFilters.created = { $lte: new Date(olderThan).getTime() };
   }
   if (newerThan) {
-    queryFilters.createdAt = { ...queryFilters.createdAt, $gt: new Date(newerThan) };
+    queryFilters.created = { ...queryFilters.createdAt, $gte: new Date(newerThan).getTime() };
   }
   const skip = (page - 1) * count;
 
@@ -65,18 +65,32 @@ export async function GET(request: Request, { params }: { params: { model: strin
     // Return the response
     return NextResponse.json({ data, links: paginationLinks, totalDocuments, totalPages });
   } catch (err) {
-    let errorMessage = 'Unknown error occurred';
+    return NextResponse.json({ error: 'Error fetching data' }, { status: 500 });
+  }
+}
 
-    // Check if the error is an instance of Error
-    if (err instanceof Error) {
-      errorMessage = err.message;
-      console.log('Error message:', errorMessage);
-      console.log('Error stack:', err.stack);
-    } else {
-      // Handle non-Error objects
-      console.log('Non-Error thrown:', err);
+export async function POST(request: NextRequest, { params }: { params: { model: string } }) {
+  await dbConnect();
+
+  const model = params.model;
+  const json = await request.json();
+
+  try {
+    switch (model) {
+      case 'case':
+        await Case.create(json);
+        return NextResponse.json({ message: 'Case created' }, { status: 201 });
+      case 'user':
+        await User.create(json);
+        return NextResponse.json({ message: 'User created' }, { status: 201 });
+      case 'organization':
+        await Organization.create(json);
+        return NextResponse.json({ message: 'Organization created' }, { status: 201 });
+      default:
+        return NextResponse.json({ error: 'No model specified' }, { status: 400 });
     }
-
-    return NextResponse.json({ error: 'Error fetching data', message: errorMessage });
+  } catch (err) {
+    console.error('Error in POST request:', err);
+    return NextResponse.json({ error: 'Error creating document' }, { status: 500 });
   }
 }

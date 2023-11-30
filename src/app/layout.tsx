@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google'
 import { ThemeProvider } from "@/components/theme-provider"
 import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { ConnectionIndicator } from '@/components/connection-indicator'
-import Header from '@/components/display/Header';
+import { Toaster } from '@/components/ui/toaster'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -27,11 +27,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="flex flex-col flex-1">{children}</main>
+            {children}
           </div>
           <TailwindIndicator />
           <ConnectionIndicator />
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

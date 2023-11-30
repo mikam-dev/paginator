@@ -1,14 +1,17 @@
 "use client"
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect } from 'react'
+import { format } from "date-fns"
 // server actions
 import { getDocs } from "@/lib/helpers"
-import revalidate from './actions'
 // ui components
+import Header from '@/components/display/Header';
+
 import { ModelSelect } from '@/components/settings/ModelSelect'
 import { Filters } from '@/components/settings/Filters'
 import { Pagination } from '@/components/settings/Pagination'
 import { Separator } from '@/components/ui/separator'
 import { SingleDoc } from "@/components/cards/SingleDoc"
+import { useToast } from "@/components/ui/use-toast"
 
 export default function Page() {
   const [model, setModel] = useState('case')
@@ -16,22 +19,26 @@ export default function Page() {
   const [totalDocuments, setTotalDocuments] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [fromDate, setFromDate] = useState<Date | undefined>()
+  const [toDate, setToDate] = useState<Date | undefined>(new Date())
   const [docs, setDocs] = useState([]);
+  const { toast } = useToast()
 
   useEffect(() => {
+    const newerThan = fromDate ? format(fromDate, "yyyy-MM-dd") : undefined
+    const olderThan = toDate ? format(toDate, "yyyy-MM-dd") : undefined
     try {
-      getDocs(model, currentPage, pageSize).then((res) => {
+      getDocs(model, currentPage, pageSize, olderThan, newerThan).then((res) => {
         setDocs(res.data)
         setTotalPages(res.totalPages)
         setTotalDocuments(res.totalDocuments)
 
-        revalidate()
         console.log(res.data)
       })
     } catch (error) {
       console.log(error)
     }
-  }, [model, currentPage, pageSize, totalDocuments])
+  }, [model, currentPage, pageSize, fromDate, toDate, totalDocuments])
 
   function handleModelChange(newModel: string) {
     setModel(newModel);
@@ -47,8 +54,30 @@ export default function Page() {
     setCurrentPage(1);
   }
 
+  function handleFromDateChange(newDate: Date | undefined) {
+    setFromDate(newDate);
+    setCurrentPage(1);
+  }
+
+  function handleToDateChange(newDate: Date | undefined) {
+    setToDate(newDate);
+    setCurrentPage(1);
+  }
+
+  function handleFormSubmit() {
+    setTotalDocuments(totalDocuments + 1)
+    setCurrentPage(totalPages);
+
+    toast({
+      description: `New document created successfully!`,
+    })
+  }
+
   function handleDelete() {
     setTotalDocuments(totalDocuments - 1)
+    toast({
+      description: `Document deleted successfully!`,
+    })
   }
 
   function rangeOfPage() {
@@ -58,41 +87,49 @@ export default function Page() {
   }
 
   return (
-    <section className="flex flex-col w-full min-h-[100vh] items-center bg-muted">
-      <div className='w-full max-w-6xl px-12 py-4 flex flex-row justify-between items-center'>
-        <div className='flex flex-1 justify-start'>
-          <ModelSelect onModelChange={handleModelChange} model={model} />
+    <main className="flex flex-col flex-1">
+      <Header formSubmit={() => handleFormSubmit()} />
+
+      <section className="flex flex-col w-full min-h-[100vh] items-center bg-muted">
+        <div className='w-full max-w-6xl px-12 py-4 flex flex-row justify-between items-center'>
+          <div className='flex flex-1 justify-start'>
+            <ModelSelect onModelChange={handleModelChange} model={model} />
+          </div>
+          <div className='flex flex-1 justify-center'>
+            {!docs ? <></> :
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                pageChange={handlePageChange}
+              />}
+          </div>
+          <div className='flex flex-1 justify-end'>
+            <Filters
+              onPageSizeChange={handlePageSizeChange}
+              pageSize={pageSize}
+              fromDate={fromDate}
+              toDate={toDate}
+              onSetFromDate={handleFromDateChange}
+              onSetToDate={handleToDateChange}
+            />
+          </div>
         </div>
-        <div className='flex flex-1 justify-center'>
+        <Separator className="w-full max-w-6xl" />
+        <div className="w-full max-w-6xl px-12 py-4 flex flex-row justify-between items-center">
           {!docs ? <></> :
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              pageChange={handlePageChange}
-            />}
+            <p className="text-sm font-medium text-muted-foreground">
+              {rangeOfPage()} of {String(totalDocuments)} results
+            </p>}
         </div>
-        <div className='flex flex-1 justify-end'>
-          <Filters
-            onPageSizeChange={handlePageSizeChange}
-            pageSize={pageSize}
-          />
+        <div className="w-full max-w-6xl grid grid-cols-1 px-8 py-4 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.isArray(docs) && docs.map((doc: {}) =>
+            <SingleDoc
+              onDelete={() => handleDelete()}
+              data={doc}
+              model={model} />
+          )}
         </div>
-      </div>
-      <Separator className="w-full max-w-6xl" />
-      <div className="w-full max-w-6xl px-12 py-4 flex flex-row justify-between items-center">
-        {!docs ? <></> :
-          <p className="text-sm font-medium text-muted-foreground">
-            {rangeOfPage()} of {String(totalDocuments)} results
-          </p>}
-      </div>
-      <div className="w-full max-w-6xl grid grid-cols-1 px-8 py-4 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {Array.isArray(docs) && docs.map((doc: {}) =>
-          <SingleDoc
-            onDelete={() => handleDelete()}
-            data={doc}
-            model={model} />
-        )}
-      </div>
-    </section>
+      </section>
+    </main>
   )
 }

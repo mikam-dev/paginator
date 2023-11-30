@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import {
 	Dialog,
@@ -16,9 +16,14 @@ import { NewOrg } from './NewOrg'
 import { NewCase } from './NewCase'
 
 
-export function CreateDocForm() {
+export function CreateDocForm({ formSubmit }: { formSubmit: () => void }) {
+	const [isDialogOpen, setDialogOpen] = useState(false);
+
+	const openDialog = () => setDialogOpen(true);
+	const closeDialog = () => setDialogOpen(false);
+
 	return (
-		<Dialog>
+		<Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
 			<DialogTrigger asChild>
 				<Button variant="default">Create New</Button>
 			</DialogTrigger>
@@ -37,13 +42,22 @@ export function CreateDocForm() {
 						<TabsTrigger value="case">Case</TabsTrigger>
 					</TabsList>
 					<TabsContent className="w-full max-w-sm" value="user">
-						<NewUser />
+						<NewUser formSubmit={() => {
+							formSubmit()
+							closeDialog()
+						}} />
 					</TabsContent>
 					<TabsContent className="w-full max-w-sm" value="org">
-						<NewOrg />
+						<NewOrg formSubmit={() => {
+							formSubmit()
+							closeDialog()
+						}} />
 					</TabsContent>
 					<TabsContent className="w-full max-w-sm" value="case">
-						<NewCase />
+						<NewCase formSubmit={() => {
+							formSubmit()
+							closeDialog()
+						}} />
 					</TabsContent>
 				</Tabs>
 			</DialogContent>

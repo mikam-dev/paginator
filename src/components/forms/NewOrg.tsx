@@ -1,5 +1,4 @@
 "use client"
-
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
@@ -16,22 +15,20 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
+import { createDoc } from "@/lib/helpers"
+
 const formSchema = z.object({
-	name: z.string().min(2, {
-		message: "Name must be at least 2 characters.",
-	}),
+	name: z.string().min(2),
 	location: z.object({
-		line1: z.string(),
+		line1: z.string().min(2),
 		line2: z.string().optional(),
-		city: z.string(),
-		state: z.string(),
-		zip: z.string(),
+		city: z.string().min(2),
+		state: z.string().min(2),
+		zip: z.string().length(5),
 	}),
-	members: z.array(z.string()),
 })
 
-export function NewOrg() {
-	// 1. Define your form.
+export function NewOrg({ formSubmit }: { formSubmit: () => void }) {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -43,15 +40,12 @@ export function NewOrg() {
 				state: "",
 				zip: "",
 			},
-			members: [],
 		},
 	})
 
-	// 2. Define a submit handler.
 	function onSubmit(values: z.infer<typeof formSchema>) {
-		// Do something with the form values.
-		// ✅ This will be type-safe and validated.
-		console.log(values)
+		createDoc("organization", values)
+		formSubmit()
 	}
 
 	return (
@@ -64,7 +58,7 @@ export function NewOrg() {
 						<FormItem>
 							<FormLabel>Oranization Name</FormLabel>
 							<FormControl>
-								<Input placeholder="Acme, Co." {...field} />
+								<Input {...field} />
 							</FormControl>
 							<FormDescription>
 								This is your organization name.
@@ -137,22 +131,6 @@ export function NewOrg() {
 							<FormControl>
 								<Input {...field} />
 							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
-				<FormField
-					control={form.control}
-					name="members"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Members</FormLabel>
-							<FormControl>
-								<Input {...field} />
-							</FormControl>
-							<FormDescription>
-								Enter the email addresses of members you would like to invite.
-							</FormDescription>
 							<FormMessage />
 						</FormItem>
 					)}

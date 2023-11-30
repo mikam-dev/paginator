@@ -1,5 +1,4 @@
 "use client"
-
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
@@ -24,28 +23,22 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover"
 
+import { createDoc } from "@/lib/helpers"
+
 const formSchema = z.object({
-	organization: z.object({
-		name: z.string().min(2, {
-			message: "Name must be at least 2 characters.",
-		}),
-	}),
 	info: z.object({
-		given_name: z.string(),
-		family_name: z.string(),
+		given_name: z.string().min(2),
+		family_name: z.string().min(2),
 		email: z.string().email(),
-		phone: z.string(),
-		dob: z.date({
-			required_error: "A date of birth is required.",
-		}),
+		phone: z.string().min(2),
+		dob: z.date(),
 	}),
 	assets: z.object({
 		avatar_url: z.string().url(),
 	})
 })
 
-export function NewUser() {
-	// 1. Define your form.
+export function NewUser({ formSubmit }: { formSubmit: () => void }) {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -62,11 +55,9 @@ export function NewUser() {
 		},
 	})
 
-	// 2. Define a submit handler.
 	function onSubmit(values: z.infer<typeof formSchema>) {
-		// Do something with the form values.
-		// ✅ This will be type-safe and validated.
-		console.log(values)
+		createDoc("user", values)
+		formSubmit()
 	}
 
 	return (

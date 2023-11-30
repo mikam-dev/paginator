@@ -28,7 +28,8 @@ export default async function generateUsers(count = 100) {
           },
           assets: {
             avatar_url: CHANCE.url()
-          }
+          },
+          created: CHANCE.date({min: new Date(2010, 0, 1), max: new Date()}),
         })
       } catch (err) {
         errors.push(JSON.stringify(err));
