@@ -11,6 +11,7 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { X } from 'lucide-react'
+import { useToast } from "@/components/ui/use-toast"
 
 import { deleteDocument } from "@/lib/helpers"
 
@@ -21,10 +22,14 @@ interface ConfirmDeleteProps {
 }
 
 export function ConfirmDelete({ model, id, onDelete }: ConfirmDeleteProps) {
+	const { toast } = useToast()
 
 	const handleDelete = () => {
 		deleteDocument(model, id)
 		onDelete()
+		toast({
+			description: `Document "${model}: ${id}" deleted successfully!`,
+		})
 	}
 
 	return (
