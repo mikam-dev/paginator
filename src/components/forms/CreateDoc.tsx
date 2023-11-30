@@ -35,11 +35,11 @@ export function CreateDocForm({ formSubmit }: { formSubmit: () => void }) {
 					</DialogDescription>
 				</DialogHeader>
 
-				<Tabs defaultValue="user" className="w-full flex flex-col items-center">
+				<Tabs defaultValue="case" className="w-full flex flex-col items-center">
 					<TabsList className="mb-4">
+						<TabsTrigger value="case">Case</TabsTrigger>
 						<TabsTrigger value="user">User</TabsTrigger>
 						<TabsTrigger value="org">Organization</TabsTrigger>
-						<TabsTrigger value="case">Case</TabsTrigger>
 					</TabsList>
 					<TabsContent className="w-full max-w-sm" value="user">
 						<NewUser formSubmit={() => {
