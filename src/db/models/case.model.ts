@@ -1,5 +1,5 @@
 import { IAddress, ICreatedUpdated, IEnhancedMongooseModel } from '@/types/db';
-import { Schema, model } from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 import Organization, { IOrganization } from './organization.model';
 
 
@@ -75,7 +75,7 @@ CaseSchema.pre('save', function (next) {
   next();
 });
 
-const Case = model<ICase>(
+const Case = mongoose.models?.Case || model<ICase>(
   'Case',
   CaseSchema
 ) as IEnhancedMongooseModel<ICase>;

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import dbConnection from '../../../db/db-connect';
-import User from '@/db/models/user.model';
+import dbConnection from '@/db/db-connect';
  
 export async function GET() {
   const db = await dbConnection();
@@ -11,21 +10,5 @@ export async function GET() {
     console.log('FAILED TO CONNECT TO DB');
   }
 
-  try {
-  await User.create({
-    info: {
-      given_name: 'Test',
-      family_name: 'User',
-      email: 'test@email.com',
-      phone: '333-456-4535',
-      dob: new Date(),
-    },
-    assets: {
-      avatar_url: '/next.svg',
-    }
-  });
-  } catch (err) {
-    console.log('ERROR', err);
-  }
   return NextResponse.json({ connectedToDb: !!db })
 }

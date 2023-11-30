@@ -1,5 +1,5 @@
 import { ICreatedUpdated, IEnhancedMongooseModel } from '@/types/db';
-import { Schema, model } from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 import { IOrganization } from './organization.model';
 
 
@@ -51,7 +51,7 @@ UserSchema.pre('save', function (next) {
   next();
 });
 
-const User = model<IUser>(
+const User = mongoose.models?.User || model<IUser>(
   'User',
   UserSchema
 ) as IEnhancedMongooseModel<IUser>;

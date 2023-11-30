@@ -47,7 +47,8 @@ export default async function generateCases(count = 100) {
             expected: CHANCE.integer({ min: 10000, max: 500000 }),
             actual: CHANCE.integer({ min: 10000, max: 500000 }),
             received: CHANCE.date()
-          }
+          },
+          created: CHANCE.date({min: new Date(2010, 0, 1), max: new Date()}),
         })
       } catch (err) {
         errors.push(JSON.stringify(err));

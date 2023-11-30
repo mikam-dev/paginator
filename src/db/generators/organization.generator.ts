@@ -2,6 +2,7 @@ import chance from 'chance';
 import { progressUpdate, sleep } from './all.generator';
 import Organization from '../models/organization.model';
 import chalk from 'chalk';
+import { lt } from 'date-fns/locale';
 
 const CHANCE = chance();
 
@@ -24,7 +25,8 @@ export default async function generateOrganizations(count = 100) {
             state: CHANCE.state(),
             zip: CHANCE.zip()
           },
-          members: []
+          members: [],
+          created: CHANCE.date({min: new Date(2010, 0, 1), max: new Date()}),
         })
       } catch (err) {
         errors.push(JSON.stringify(err));

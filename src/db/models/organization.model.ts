@@ -1,5 +1,5 @@
 import { IAddress, ICreatedUpdated, IEnhancedMongooseModel } from '@/types/db';
-import { Schema, model } from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 
 
 export interface IOrganization<Member = string> extends ICreatedUpdated {
@@ -38,7 +38,7 @@ OrganizationSchema.pre('save', function (next) {
   next();
 });
 
-const Organization = model<IOrganization>(
+const Organization = mongoose.models?.Organization || model<IOrganization>(
   'Organization',
   OrganizationSchema
 ) as IEnhancedMongooseModel<IOrganization>;
