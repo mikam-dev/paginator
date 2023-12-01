@@ -38,7 +38,7 @@ export function UserCard({ data, onDelete }: UserCardProps) {
 					</Button>
 				</div>
 				<CardDescription className="flex flex-col items-start justify-evenly">
-					<Image src={"/user.svg"} alt={"Avatar"} width={36} height={36} />
+					<Image src={"/user.svg"} alt={"avatar"} width={36} height={36} />
 					<p>{organization?.name}</p>
 				</CardDescription>
 			</CardHeader>
@@ -48,7 +48,7 @@ export function UserCard({ data, onDelete }: UserCardProps) {
 				<p><strong>DoB:</strong> {dateOfBirth.toLocaleDateString()}</p>
 			</CardContent>
 			<CardFooter className="py-4">
-				<Badge variant="default">User: {_id}</Badge>
+				<Badge variant="default">User</Badge>
 			</CardFooter>
 		</Card>
 	)

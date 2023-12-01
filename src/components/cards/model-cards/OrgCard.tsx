@@ -45,7 +45,7 @@ export function OrgCard({ data, onDelete }: OrgCardProps) {
 				))}
 			</CardContent>
 			<CardFooter className="py-4">
-				<Badge variant="default">Organization: {_id}</Badge>
+				<Badge variant="default">Organization</Badge>
 			</CardFooter>
 		</Card>
 	)

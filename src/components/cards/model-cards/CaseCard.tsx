@@ -35,14 +35,30 @@ export function CaseCard({ data, onDelete }: CaseCardProps) {
 					</Button>
 				</div>
 				<CardDescription className="flex flex-col items-start justify-evenly">
-					<p>{client?.email}</p>
-					<p>{client?.phone}</p>
+					<div className="flex flex-col items-start justify-evenly mb-2">
+						<p>{client?.email}</p>
+						<p>{client?.phone}</p>
+					</div>
+					<div className="flex flex-col items-start justify-evenly">
+						<p>{client?.address.line1}</p>
+						<p>{client?.address.line2}</p>
+						<p>{client?.address.city}, {client?.address.state}</p>
+						<p>{client?.address.zip}</p>
+					</div>
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="flex flex-col flex-1 h-fit max-h-[200px] overflow-auto justify-start items-start">
 				<div className="flex flex-col items-start justify-evenly mb-1">
-					<h3 className="text-lg font-semibold mb-1">Incident</h3>
-					<p>Date: {incidentDate.toLocaleDateString()}</p>
+					<div className="flex justify-between items-center w-full mb-2">
+						<h3 className="text-lg font-semibold">Incident</h3>
+						<p>{incidentDate.toLocaleDateString()}</p>
+					</div>
+					<ul className="mb-2">
+						<li>{incident?.address.line1}</li>
+						<li>{incident?.address.line2}</li>
+						<li>{incident?.address.city}, {incident?.address.state}</li>
+						<li>{incident?.address.zip}</li>
+					</ul>
 					<p>{incident?.details}</p>
 				</div>
 				<div className="flex flex-col items-start justify-evenly mb-1">
@@ -53,7 +69,7 @@ export function CaseCard({ data, onDelete }: CaseCardProps) {
 				</div>
 			</CardContent>
 			<CardFooter className="py-4">
-				<Badge variant="default">Case: {_id}</Badge>
+				<Badge variant="default">Case</Badge>
 			</CardFooter>
 		</Card>
 	)

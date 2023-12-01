@@ -1,30 +1,38 @@
 "use client"
 import { useState, useEffect } from 'react'
-import { format } from "date-fns"
-// server actions
-import { getDocs } from "@/lib/helpers"
+// npm assets
+import { format } from 'date-fns'
+// helper functions
+import { getDocs } from '@/lib/helpers'
 // ui components
-import Header from '@/components/display/Header';
-
+import { Header } from '@/components/display/Header';
 import { ModelSelect } from '@/components/settings/ModelSelect'
 import { Filters } from '@/components/settings/Filters'
 import { Pagination } from '@/components/settings/Pagination'
 import { Separator } from '@/components/ui/separator'
-import { SingleDoc } from "@/components/cards/SingleDoc"
-import { useToast } from "@/components/ui/use-toast"
+import { SingleDoc } from '@/components/cards/SingleDoc'
+import { useToast } from '@/components/ui/use-toast'
 
 export default function Page() {
-  const [model, setModel] = useState('case')
+  // pagination states
+  const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalDocuments, setTotalDocuments] = useState(0);
-  const [totalPages, setTotalPages] = useState(1);
+  // filter states
   const [pageSize, setPageSize] = useState(10);
-  const [fromDate, setFromDate] = useState<Date | undefined>()
-  const [toDate, setToDate] = useState<Date | undefined>(new Date())
-  const [docs, setDocs] = useState([]);
+  const [fromDate, setFromDate] = useState<Date | undefined>() // default to undefined to show all existing docs
+  const [toDate, setToDate] = useState<Date | undefined>(new Date()) // default to today
+  const [model, setModel] = useState('case')
+  // documents array state
+  const [docs, setDocs] = useState([{}]);
+  // toaster hook
   const { toast } = useToast()
 
   useEffect(() => {
+    retrieveDocs()
+  }, [model, currentPage, pageSize, fromDate, toDate, totalDocuments])
+
+  function retrieveDocs() {
     const newerThan = fromDate ? format(fromDate, "yyyy-MM-dd") : undefined
     const olderThan = toDate ? format(toDate, "yyyy-MM-dd") : undefined
     try {
@@ -38,7 +46,7 @@ export default function Page() {
     } catch (error) {
       console.log(error)
     }
-  }, [model, currentPage, pageSize, fromDate, toDate, totalDocuments])
+  }
 
   function handleModelChange(newModel: string) {
     setModel(newModel);
@@ -65,7 +73,6 @@ export default function Page() {
   }
 
   function handleFormSubmit() {
-    setTotalDocuments(totalDocuments + 1)
     setCurrentPage(totalPages);
 
     toast({
@@ -75,6 +82,7 @@ export default function Page() {
 
   function handleDelete() {
     setTotalDocuments(totalDocuments - 1)
+    retrieveDocs()
   }
 
   function rangeOfPage() {
@@ -85,7 +93,7 @@ export default function Page() {
 
   return (
     <main className="flex flex-col flex-1">
-      <Header formSubmit={() => handleFormSubmit()} />
+      <Header formSubmit={handleFormSubmit} />
 
       <section className="flex flex-col w-full min-h-[100vh] items-center bg-muted">
         <div className='w-full max-w-6xl px-12 py-4 flex flex-row justify-between items-center'>
@@ -93,12 +101,12 @@ export default function Page() {
             <ModelSelect onModelChange={handleModelChange} model={model} />
           </div>
           <div className='flex flex-1 justify-center'>
-            {!docs ? <></> :
+            {docs ?
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
                 pageChange={handlePageChange}
-              />}
+              /> : <></>}
           </div>
           <div className='flex flex-1 justify-end'>
             <Filters
@@ -113,18 +121,18 @@ export default function Page() {
         </div>
         <Separator className="w-full max-w-6xl" />
         <div className="w-full max-w-6xl px-12 py-4 flex flex-row justify-between items-center">
-          {!docs ? <></> :
+          {docs ?
             <p className="text-sm font-medium text-muted-foreground">
               {rangeOfPage()} of {String(totalDocuments)} results
-            </p>}
+            </p> : <></>}
         </div>
         <div className="w-full max-w-6xl grid grid-cols-1 px-8 py-4 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Array.isArray(docs) && docs.map((doc: {}) =>
+          {docs ? docs.map((doc: {}) =>
             <SingleDoc
               onDelete={() => handleDelete()}
               data={doc}
               model={model} />
-          )}
+          ) : <></>}
         </div>
       </section>
     </main>

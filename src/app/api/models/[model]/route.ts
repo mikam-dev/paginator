@@ -1,4 +1,3 @@
-// TODO: Create dynamic api route to retrieve Case, User, or Organization items
 import { NextRequest, NextResponse } from 'next/server';
 
 import dbConnect from '@/db/db-connect';
@@ -16,9 +15,9 @@ export async function GET(request: Request, { params }: { params: { model: strin
   // Extract and handle query parameters
   const olderThan = searchParams.get('olderThan');
   const newerThan = searchParams.get('newerThan');
+  const page = parseInt(searchParams.get('page') || '1', 10);
   let count = parseInt(searchParams.get('count') || '10', 10);
   count = count > 50 ? 50 : count;
-  const page = parseInt(searchParams.get('page') || '1', 10);
 
   // Apply date filters and pagination
   const queryFilters: Record<string, any> = {};
