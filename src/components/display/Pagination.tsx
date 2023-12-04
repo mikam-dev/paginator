@@ -6,7 +6,6 @@ import {
 	DoubleArrowLeftIcon,
 	DoubleArrowRightIcon,
 } from "@radix-ui/react-icons"
-
 import { Button } from "@/components/ui/button"
 import { Input } from "../ui/input";
 
@@ -16,6 +15,15 @@ interface PaginationProps {
 	pageChange: (page: number) => void;
 }
 
+/**
+ * Pagination component to navigate between pages.
+ *
+ * @param {Object} props - Component properties.
+ * @param {number} props.currentPage - The current active page.
+ * @param {number} props.totalPages - The total number of pages.
+ * @param {Function} props.pageChange - Callback function to change the page.
+ * @returns {React.Component} A pagination component.
+ */
 export function Pagination({
 	currentPage,
 	totalPages,
@@ -24,21 +32,18 @@ export function Pagination({
 	const [search, setSearch] = useState("")
 
 	function handleSearch() {
-		if (search === "") {
-			return
+		const pageNumber = Number(search);
+		if (search === "" || isNaN(pageNumber)) {
+			return;
 		}
-		if (Number(search) > totalPages) {
-			pageChange(totalPages)
-			setSearch("")
-			return
+		if (pageNumber > totalPages) {
+			pageChange(totalPages);
+		} else if (pageNumber < 1) {
+			pageChange(1);
+		} else {
+			pageChange(pageNumber);
 		}
-		if (Number(search) < 1) {
-			pageChange(1)
-			setSearch("")
-			return
-		}
-		pageChange(Number(search))
-		setSearch("")
+		setSearch("");
 	}
 
 	return (

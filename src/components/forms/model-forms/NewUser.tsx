@@ -38,6 +38,13 @@ const formSchema = z.object({
 	})
 })
 
+/**
+ * Form for creating a new user.
+ * Allows input of user personal information and assets (avatar URL).
+ *
+ * @param {Function} formSubmit - Function to execute on form submission.
+ * @returns {React.Component} A form component for creating a new user.
+ */
 export function NewUser({ formSubmit }: { formSubmit: () => void }) {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),

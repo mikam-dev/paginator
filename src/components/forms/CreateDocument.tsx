@@ -15,6 +15,12 @@ import { NewUser } from './model-forms/NewUser'
 import { NewOrg } from './model-forms/NewOrganization'
 import { NewCase } from './model-forms/NewCase'
 
+/**
+ * Represents a dialog for creating new documents.
+ *
+ * @param {Function} formSubmit - Function to execute on document creation form submission.
+ * @returns {React.Component} The create document dialog.
+ */
 export function CreateDocumentDialog({ formSubmit }: { formSubmit: () => void }) {
 	const [isDialogOpen, setDialogOpen] = useState(false);
 

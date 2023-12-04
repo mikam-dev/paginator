@@ -5,7 +5,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-// input mask for phone numbers
+/**
+ * Formats a string as a phone number.
+ * 
+ * @param {string} value - The input string to format.
+ * @returns {string} The formatted phone number.
+ */
 export function formatPhoneNumber(value: string) {
   // Remove all non-digit characters and limit length to 10
   const cleaned = value.replace(/\D/g, '').slice(0, 10);
@@ -20,7 +25,12 @@ export function formatPhoneNumber(value: string) {
   return value;
 }
 
-// input mask for zip codes
+/**
+ * Formats a string as a zip code.
+ * 
+ * @param {string} value - The input string to format.
+ * @returns {string} The formatted zip code.
+ */
 export function formatZipCode(value: string) {
   // Remove all non-digit characters
   const cleaned = value.replace(/\D/g, '').slice(0, 5);

@@ -1,6 +1,5 @@
 "use client"
 import Image from "next/image"
-
 import {
 	Card,
 	CardContent,
@@ -13,6 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ConfirmDelete } from '../ConfirmDelete'
+
 import { IUser } from "@/db/models/user.model"
 
 interface UserCardProps {
@@ -20,6 +20,14 @@ interface UserCardProps {
 	onDelete: () => void
 }
 
+/**
+ * Card component for displaying information about a user.
+ *
+ * @param {Object} props - Component properties.
+ * @param {IUser} props.data - The user data to display.
+ * @param {Function} props.onDelete - Callback function for delete action.
+ * @returns {React.Component} A card component displaying user details.
+ */
 export function UserCard({ data, onDelete }: UserCardProps) {
 	const { _id, organization, info, assets } = data
 

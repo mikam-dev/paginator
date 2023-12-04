@@ -25,6 +25,18 @@ interface FilterProps {
 	onSetToDate: (date: Date | undefined) => void
 }
 
+/**
+ * Component for displaying filter options such as theme toggle, page size, and date range selection.
+ *
+ * @param {Object} props - Component properties.
+ * @param {number} props.pageSize - The current number of items per page.
+ * @param {Function} props.onPageSizeChange - Callback when page size changes.
+ * @param {Date|undefined} props.fromDate - The starting date of the filter range.
+ * @param {Date|undefined} props.toDate - The ending date of the filter range.
+ * @param {Function} props.onSetFromDate - Callback when the starting date changes.
+ * @param {Function} props.onSetToDate - Callback when the ending date changes.
+ * @returns {React.Component} A component with various filter options.
+ */
 export function Filters({
 	pageSize,
 	onPageSizeChange,

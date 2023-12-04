@@ -19,6 +19,14 @@ interface CaseCardProps {
 	onDelete: () => void;
 }
 
+/**
+ * Card component for displaying information about a case.
+ *
+ * @param {Object} props - Component properties.
+ * @param {ICase} props.data - The case data to display.
+ * @param {Function} props.onDelete - Callback function for delete action.
+ * @returns {React.Component} A card component displaying case details.
+ */
 export function CaseCard({ data, onDelete }: CaseCardProps) {
 	const { _id, client, incident, recovery } = data;
 

@@ -21,15 +21,33 @@ interface ConfirmDeleteProps {
 	onDelete: () => void;
 }
 
+
+/**
+ * A confirmation dialog component for deleting a document.
+ *
+ * @param {Object} props - Component properties.
+ * @param {string} props.model - The model type of the document.
+ * @param {string} props.id - The unique identifier of the document.
+ * @param {Function} props.onDelete - Callback function to execute on successful deletion.
+ * @returns {React.Component} A dialog component to confirm deletion of a document.
+ */
 export function ConfirmDelete({ model, id, onDelete }: ConfirmDeleteProps) {
 	const { toast } = useToast()
 
 	const handleDelete = () => {
 		deleteDocument(model, id)
-		onDelete()
-		toast({
-			description: `Document "${model}: ${id}" deleted successfully!`,
-		})
+			.then(() => {
+				onDelete();
+				toast({
+					description: `Document "${model}: ${id}" deleted successfully!`,
+				});
+			})
+			.catch(() => {
+				toast({
+					description: `Error deleting document "${model}: ${id}".`,
+					variant: "destructive",
+				});
+			});
 	}
 
 	return (

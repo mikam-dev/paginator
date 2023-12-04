@@ -64,6 +64,13 @@ const formSchema = z.object({
 	}),
 })
 
+/**
+ * Form for creating a new case.
+ * Allows input of client details, incident information, and recovery details.
+ *
+ * @param {Function} formSubmit - Function to execute on form submission.
+ * @returns {React.Component} A form component for creating a new case.
+ */
 export function NewCase({ formSubmit }: { formSubmit: () => void }) {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),

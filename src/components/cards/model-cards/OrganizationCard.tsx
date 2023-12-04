@@ -19,6 +19,14 @@ interface OrgCardProps {
 	onDelete: () => void;
 }
 
+/**
+ * Card component for displaying information about an organization.
+ *
+ * @param {Object} props - Component properties.
+ * @param {IOrganization} props.data - The organization data to display.
+ * @param {Function} props.onDelete - Callback function for delete action.
+ * @returns {React.Component} A card component displaying organization details.
+ */
 export function OrganizationCard({ data, onDelete }: OrgCardProps) {
 	const { _id, name, location, members = [] } = data;
 

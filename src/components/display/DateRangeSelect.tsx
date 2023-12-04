@@ -21,8 +21,18 @@ interface DateRangeSelectProps {
 	onSetToDate: (date: Date | undefined) => void
 }
 
+/**
+ * Component for selecting a date range with 'From' and 'To' date pickers.
+ *
+ * @param {Object} props - Component properties.
+ * @param {string} [props.className] - Additional CSS class for styling.
+ * @param {Date|undefined} props.fromDate - The starting date of the range.
+ * @param {Date|undefined} props.toDate - The ending date of the range.
+ * @param {Function} props.onSetFromDate - Callback when the starting date changes.
+ * @param {Function} props.onSetToDate - Callback when the ending date changes.
+ * @returns {React.Component} A component with two date pickers for selecting a date range.
+ */
 export function DateRangeSelect({
-	className,
 	fromDate,
 	toDate,
 	onSetFromDate,
@@ -31,7 +41,7 @@ export function DateRangeSelect({
 	const { toast } = useToast()
 
 	return (
-		<div className={cn("grid gap-2", className)}>
+		<div className={cn("grid gap-2")}>
 			{/* Calendar 1 i.e. "From" Date Picker */}
 			<div className="flex flex-col items-start justify-evenly">
 				<div className="mb-1 w-full flex justify-between items-center">
@@ -115,3 +125,5 @@ export function DateRangeSelect({
 		</div>
 	)
 }
+
+export default DateRangeSelect

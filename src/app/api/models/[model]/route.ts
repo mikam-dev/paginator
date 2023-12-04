@@ -5,6 +5,14 @@ import Case from '@/db/models/case.model';
 import User from '@/db/models/user.model';
 import Organization from '@/db/models/organization.model';
 
+/**
+ * Handles GET requests to fetch documents based on model type with pagination and optional date filters.
+ *
+ * @param {NextRequest} request - The Next.js request object.
+ * @param {object} params - URL parameters.
+ * @param {string} params.model - The model type ('case', 'user', 'organization').
+ * @returns {Promise<NextResponse>} A NextResponse object containing the fetched data or an error message.
+ */
 export async function GET(
   request: NextRequest, 
   { params }: { params: { model: string } }) {
@@ -30,7 +38,7 @@ export async function GET(
   }
   if (newerThan) {
     queryFilters.created = { 
-      ...queryFilters.createdAt, 
+      ...queryFilters.created, 
       $gte: new Date(newerThan).getTime() 
     };
   }
@@ -61,7 +69,31 @@ export async function GET(
     // Calculate total pages and pagination links
     const totalPages = Math.ceil(totalDocuments / count);
     
-    const createPaginationUrl = (newPage: number) => `${request.url}&page=${newPage}&count=${count}`;
+  /**
+   * Creates a URL for pagination with updated page numbers while preserving other parameters.
+   *
+   * @param {number} newPage - The new page number to set in the URL.
+   * @returns {string} The updated URL with the new page number.
+   */
+    const createPaginationUrl = (newPage: number) => {
+      // Create a new URL object based on the current request URL
+      const url = new URL(request.url);
+
+      // Create an instance of URLSearchParams from the current URL's search parameters
+      const searchParams = new URLSearchParams(url.searchParams);
+
+      // Set the 'page' parameter to the new page number
+      searchParams.set('page', newPage.toString());
+
+      // Ensure 'count' parameter is set
+      searchParams.set('count', count.toString());
+
+      // Update the URL's search string with the modified search parameters
+      url.search = searchParams.toString();
+
+      // Return the updated URL as a string
+      return url.toString();
+    };
 
     const paginationLinks = {
       next: page < totalPages ? createPaginationUrl(page + 1) : null,
@@ -82,6 +114,14 @@ export async function GET(
   }
 }
 
+/**
+ * Handles POST requests to create a new document based on the model type.
+ *
+ * @param {NextRequest} request - The Next.js request object.
+ * @param {object} params - URL parameters.
+ * @param {string} params.model - The model type ('case', 'user', 'organization').
+ * @returns {Promise<NextResponse>} A NextResponse object confirming creation or an error message.
+ */
 export async function POST(
   request: NextRequest, 
   { params }: { params: { model: string } }) {
@@ -105,7 +145,6 @@ export async function POST(
         return NextResponse.json({ error: 'No model specified' }, { status: 400 });
     }
   } catch (err) {
-    console.error('Error in POST request:', err);
     return NextResponse.json({ error: 'Error creating document' }, { status: 500 });
   }
 }

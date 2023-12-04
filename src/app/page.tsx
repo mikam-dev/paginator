@@ -14,9 +14,14 @@ import { ModelSelect } from '@/components/display/ModelSelect'
 import { Filters } from '@/components/display/Filters'
 import { Pagination } from '@/components/display/Pagination'
 
-
+/**
+ * The main page component responsible for displaying documents.
+ * Manages state for document data, pagination, filtering, and loading.
+ *
+ * @returns {React.Component} The main page component.
+ */
 export default function Page() {
-  // initial loading state
+  // Define states for various functionalities
   const [isLoading, setIsLoading] = useState(true);
   // pagination states
   const [totalPages, setTotalPages] = useState(1);
@@ -24,7 +29,7 @@ export default function Page() {
   const [totalDocuments, setTotalDocuments] = useState(0);
   // filter states
   const [pageSize, setPageSize] = useState(10);
-  const [fromDate, setFromDate] = useState<Date | undefined>() // default to undefined to show all existing docs
+  const [fromDate, setFromDate] = useState<Date | undefined>()
   const [toDate, setToDate] = useState<Date | undefined>()
   const [model, setModel] = useState('case')
   // documents array state
@@ -32,10 +37,12 @@ export default function Page() {
   // toaster hook
   const { toast } = useToast()
 
+  // Fetch documents whenever dependencies change
   useEffect(() => {
     fetchDocuments()
   }, [model, currentPage, pageSize, fromDate, toDate, totalDocuments])
 
+  // Function to fetch documents
   function fetchDocuments() {
     const newerThan = fromDate ? format(fromDate, "yyyy-MM-dd") : undefined;
     const olderThan = toDate ? format(toDate, "yyyy-MM-dd") : undefined;
@@ -53,7 +60,7 @@ export default function Page() {
       });
   }
 
-  // event handlers
+  // Event handlers
   function handleModelChange(newModel: string) {
     setIsLoading(true);
     setModel(newModel);
@@ -92,13 +99,14 @@ export default function Page() {
     fetchDocuments()
   }
 
+  // Calculate range of documents currently being displayed
   function rangeOfPage() {
     const start = (currentPage * pageSize - pageSize + 1);
     const end = (currentPage * pageSize) > totalDocuments ? totalDocuments : (currentPage * pageSize);
     return `${start} - ${end}`;
   }
 
-  // render component
+  // Render the main page component
   return (
     <main className="flex flex-col flex-1">
       <Header formSubmit={handleFormSubmit} />

@@ -12,6 +12,14 @@ interface ModelSelectProps {
 	onModelChange: (model: string) => void;
 }
 
+/**
+ * Dropdown menu for selecting a model type.
+ *
+ * @param {Object} props - Component properties.
+ * @param {string} props.model - The currently selected model.
+ * @param {Function} props.onModelChange - Callback function when the model selection changes.
+ * @returns {React.Component} A dropdown select component for model types.
+ */
 export function ModelSelect({ model, onModelChange }: ModelSelectProps) {
 	return (
 		<Select
