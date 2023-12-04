@@ -9,9 +9,9 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card"
-
 import { Button } from "@/components/ui/button"
 import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { ConfirmDelete } from '../ConfirmDelete'
 import { IUser } from "@/db/models/user.model"
 
@@ -42,10 +42,12 @@ export function UserCard({ data, onDelete }: UserCardProps) {
 					<p>{organization?.name}</p>
 				</CardDescription>
 			</CardHeader>
-			<CardContent className="flex flex-col flex-1 h-fit max-h-[200px] overflow-auto justify-start items-start">
-				<p><strong>Email:</strong> {info?.email}</p>
-				<p><strong>Phone:</strong> {info?.phone}</p>
-				<p><strong>DoB:</strong> {dateOfBirth.toLocaleDateString()}</p>
+			<CardContent>
+				<ScrollArea className="flex flex-col flex-1 h-fit max-h-[200px] overflow-auto justify-start items-start">
+					<p><strong>Email:</strong> {info?.email}</p>
+					<p><strong>Phone:</strong> {info?.phone}</p>
+					<p><strong>DoB:</strong> {dateOfBirth.toLocaleDateString()}</p>
+				</ScrollArea>
 			</CardContent>
 			<CardFooter className="py-4">
 				<Badge variant="default">User</Badge>

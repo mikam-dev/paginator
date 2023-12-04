@@ -1,15 +1,15 @@
 import { Skeleton } from '../ui/skeleton'
 import { CaseCard } from './model-cards/CaseCard'
+import { OrganizationCard } from './model-cards/OrganizationCard'
 import { UserCard } from './model-cards/UserCard'
-import { OrgCard } from './model-cards/OrgCard'
 
-interface SingleDocProps {
+interface SingleDocumentProps {
 	model: string;
 	data: any;
 	onDelete: () => void;
 }
 
-export function SingleDoc({ model, data, onDelete }: SingleDocProps) {
+export function SingleDocument({ model, data, onDelete }: SingleDocumentProps) {
 	if (model === 'case') {
 		return (
 			<CaseCard onDelete={() => onDelete()} data={data} />
@@ -22,15 +22,9 @@ export function SingleDoc({ model, data, onDelete }: SingleDocProps) {
 	}
 	if (model === 'organization') {
 		return (
-			<OrgCard onDelete={() => onDelete()} data={data} />
+			<OrganizationCard onDelete={() => onDelete()} data={data} />
 		)
 	}
-	else {
-		return (
-			<Skeleton />
-		)
-	}
-
 }
 
-export default SingleDoc
+export default SingleDocument

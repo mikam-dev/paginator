@@ -5,7 +5,9 @@ import Case from '@/db/models/case.model';
 import User from '@/db/models/user.model';
 import Organization from '@/db/models/organization.model';
 
-export async function GET(request: Request, { params }: { params: { model: string } }) {
+export async function GET(
+  request: NextRequest, 
+  { params }: { params: { model: string } }) {
   await dbConnect();
 
   const model = params.model;
@@ -22,10 +24,15 @@ export async function GET(request: Request, { params }: { params: { model: strin
   // Apply date filters and pagination
   const queryFilters: Record<string, any> = {};
   if (olderThan) {
-    queryFilters.created = { $lte: new Date(olderThan).getTime() };
+    queryFilters.created = { 
+      $lte: new Date(olderThan).getTime() 
+    };
   }
   if (newerThan) {
-    queryFilters.created = { ...queryFilters.createdAt, $gte: new Date(newerThan).getTime() };
+    queryFilters.created = { 
+      ...queryFilters.createdAt, 
+      $gte: new Date(newerThan).getTime() 
+    };
   }
   const skip = (page - 1) * count;
 
@@ -48,12 +55,14 @@ export async function GET(request: Request, { params }: { params: { model: strin
         totalDocuments = await Organization.countDocuments(queryFilters);
       break;
       default:
-        return NextResponse.json({ error: 'No model specified' });
+        return NextResponse.json({ error: 'No model specified' }, { status: 400 });
     }
 
     // Calculate total pages and pagination links
     const totalPages = Math.ceil(totalDocuments / count);
+    
     const createPaginationUrl = (newPage: number) => `${request.url}&page=${newPage}&count=${count}`;
+
     const paginationLinks = {
       next: page < totalPages ? createPaginationUrl(page + 1) : null,
       prev: page > 1 ? createPaginationUrl(page - 1) : null,
@@ -62,13 +71,20 @@ export async function GET(request: Request, { params }: { params: { model: strin
     };
 
     // Return the response
-    return NextResponse.json({ data, links: paginationLinks, totalDocuments, totalPages });
+    return NextResponse.json({ 
+      data, 
+      links: paginationLinks, 
+      totalDocuments, 
+      totalPages 
+    }, { status: 200 });
   } catch (err) {
     return NextResponse.json({ error: 'Error fetching data' }, { status: 500 });
   }
 }
 
-export async function POST(request: NextRequest, { params }: { params: { model: string } }) {
+export async function POST(
+  request: NextRequest, 
+  { params }: { params: { model: string } }) {
   await dbConnect();
 
   const model = params.model;

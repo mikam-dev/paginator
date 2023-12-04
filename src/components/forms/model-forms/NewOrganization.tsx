@@ -15,16 +15,17 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
-import { createDoc } from "@/lib/helpers"
+import { createDocument } from "@/app/actions"
+import { formatZipCode } from "@/lib/utils"
 
 const formSchema = z.object({
-	name: z.string().min(2),
+	name: z.string().min(2, "Name must be at least 2 characters"),
 	location: z.object({
-		line1: z.string().min(2),
+		line1: z.string().min(2, "Street address must be at least 2 characters"),
 		line2: z.string().optional(),
-		city: z.string().min(2),
-		state: z.string().min(2),
-		zip: z.string().length(5),
+		city: z.string().min(2, "City must be at least 2 characters"),
+		state: z.string().min(2, "State must be at least 2 characters"),
+		zip: z.string().length(5, "Zip code must be 5 digits"),
 	}),
 })
 
@@ -44,7 +45,7 @@ export function NewOrg({ formSubmit }: { formSubmit: () => void }) {
 	})
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
-		createDoc("organization", values)
+		createDocument("organization", values)
 		formSubmit()
 	}
 
@@ -129,7 +130,15 @@ export function NewOrg({ formSubmit }: { formSubmit: () => void }) {
 						<FormItem>
 							<FormLabel>Zip Code</FormLabel>
 							<FormControl>
-								<Input {...field} />
+								<Input
+									type="text"
+									{...form.register("location.zip")}
+									onChange={(e) => {
+										const formattedZipCode = formatZipCode(e.target.value);
+										e.target.value = formattedZipCode; // Set the formatted value
+										form.setValue("location.zip", formattedZipCode); // Update React Hook Form value
+									}}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>

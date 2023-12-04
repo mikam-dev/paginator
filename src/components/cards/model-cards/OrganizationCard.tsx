@@ -7,9 +7,9 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-
 import { Button } from "@/components/ui/button";
 import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { ConfirmDelete } from '../ConfirmDelete';
 
 import { IOrganization } from "@/db/models/organization.model";
@@ -19,7 +19,7 @@ interface OrgCardProps {
 	onDelete: () => void;
 }
 
-export function OrgCard({ data, onDelete }: OrgCardProps) {
+export function OrganizationCard({ data, onDelete }: OrgCardProps) {
 	const { _id, name, location, members = [] } = data;
 
 	return (
@@ -39,10 +39,12 @@ export function OrgCard({ data, onDelete }: OrgCardProps) {
 					<p>{location?.zip}</p>
 				</CardDescription>
 			</CardHeader>
-			<CardContent className="flex flex-col flex-1 h-fit max-h-[200px] overflow-auto justify-start items-start">
-				{members.map((member, index) => (
-					<p key={index}>{member}</p>
-				))}
+			<CardContent>
+				<ScrollArea className="flex flex-col flex-1 h-fit max-h-[200px] overflow-auto justify-start items-start">
+					{members.map((member, index) => (
+						<p key={index}>{member}</p>
+					))}
+				</ScrollArea>
 			</CardContent>
 			<CardFooter className="py-4">
 				<Badge variant="default">Organization</Badge>
@@ -51,4 +53,4 @@ export function OrgCard({ data, onDelete }: OrgCardProps) {
 	)
 }
 
-export default OrgCard;
+export default OrganizationCard;

@@ -3,8 +3,6 @@
 import React from "react"
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
-import { DateRange } from "react-day-picker"
-
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -13,6 +11,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover"
+import { useToast } from "../ui/use-toast"
 
 interface DateRangeSelectProps {
 	className?: React.HTMLAttributes<HTMLDivElement>
@@ -29,10 +28,20 @@ export function DateRangeSelect({
 	onSetFromDate,
 	onSetToDate,
 }: DateRangeSelectProps) {
+	const { toast } = useToast()
+
 	return (
 		<div className={cn("grid gap-2", className)}>
+			{/* Calendar 1 i.e. "From" Date Picker */}
 			<div className="flex flex-col items-start justify-evenly">
-				<p className="mr-1">From: </p>
+				<div className="mb-1 w-full flex justify-between items-center">
+					<p>From: </p>
+					{/* Button to clear/reset date range settings */}
+					<Button variant="ghost" onClick={() => {
+						onSetFromDate(undefined)
+						onSetToDate(undefined)
+					}}>Reset</Button>
+				</div>
 				<Popover>
 					<PopoverTrigger asChild>
 						<Button
@@ -51,13 +60,22 @@ export function DateRangeSelect({
 							mode="single"
 							selected={fromDate}
 							onSelect={(value) => {
-								onSetFromDate(value);
+								if ((toDate) && (value) && (value > toDate)) {
+									toast({
+										variant: 'destructive',
+										title: 'Invalid date',
+										description: '"From" date cannot be after "To" date'
+									})
+								} else {
+									onSetFromDate(value);
+								}
 							}}
 							initialFocus
 						/>
 					</PopoverContent>
 				</Popover>
 			</div>
+			{/* Calendar 2 i.e. "To" Date Picker */}
 			<div className="flex flex-col items-start justify-evenly">
 				<p className="mr-1">To: </p>
 				<Popover>
@@ -79,7 +97,15 @@ export function DateRangeSelect({
 							defaultMonth={toDate}
 							selected={toDate}
 							onSelect={(value) => {
-								onSetToDate(value);
+								if ((fromDate) && (value) && (value < fromDate)) {
+									toast({
+										variant: 'destructive',
+										title: 'Invalid date',
+										description: '"To" date cannot be before "From" date',
+									})
+								} else {
+									onSetToDate(value);
+								}
 							}}
 							initialFocus
 						/>

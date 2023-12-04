@@ -11,12 +11,11 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { NewUser } from './NewUser'
-import { NewOrg } from './NewOrg'
-import { NewCase } from './NewCase'
+import { NewUser } from './model-forms/NewUser'
+import { NewOrg } from './model-forms/NewOrganization'
+import { NewCase } from './model-forms/NewCase'
 
-
-export function CreateDocForm({ formSubmit }: { formSubmit: () => void }) {
+export function CreateDocumentDialog({ formSubmit }: { formSubmit: () => void }) {
 	const [isDialogOpen, setDialogOpen] = useState(false);
 
 	const openDialog = () => setDialogOpen(true);
@@ -66,4 +65,4 @@ export function CreateDocForm({ formSubmit }: { formSubmit: () => void }) {
 	)
 }
 
-export default CreateDocForm
+export default CreateDocumentDialog

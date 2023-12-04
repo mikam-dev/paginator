@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { ConfirmDelete } from '../ConfirmDelete';
 
 import { ICase } from '@/db/models/case.model';
@@ -47,26 +48,28 @@ export function CaseCard({ data, onDelete }: CaseCardProps) {
 					</div>
 				</CardDescription>
 			</CardHeader>
-			<CardContent className="flex flex-col flex-1 h-fit max-h-[200px] overflow-auto justify-start items-start">
-				<div className="flex flex-col items-start justify-evenly mb-1">
-					<div className="flex justify-between items-center w-full mb-2">
-						<h3 className="text-lg font-semibold">Incident</h3>
-						<p>{incidentDate.toLocaleDateString()}</p>
+			<CardContent>
+				<ScrollArea className="flex flex-col flex-1 w-full px-2 h-fit max-h-[200px] overflow-auto justify-start items-start">
+					<div className="flex flex-col items-start justify-evenly mb-1">
+						<div className="flex justify-between items-center w-full mb-2">
+							<h3 className="text-lg font-semibold">Incident</h3>
+							<p>{incidentDate.toLocaleDateString()}</p>
+						</div>
+						<ul className="mb-2">
+							<li>{incident?.address.line1}</li>
+							<li>{incident?.address.line2}</li>
+							<li>{incident?.address.city}, {incident?.address.state}</li>
+							<li>{incident?.address.zip}</li>
+						</ul>
+						<p>{incident?.details}</p>
 					</div>
-					<ul className="mb-2">
-						<li>{incident?.address.line1}</li>
-						<li>{incident?.address.line2}</li>
-						<li>{incident?.address.city}, {incident?.address.state}</li>
-						<li>{incident?.address.zip}</li>
-					</ul>
-					<p>{incident?.details}</p>
-				</div>
-				<div className="flex flex-col items-start justify-evenly mb-1">
-					<h3 className="text-lg font-semibold mb-1">Recovery</h3>
-					<p>Expected: {recovery?.expected}</p>
-					<p>Actual: {recovery?.actual}</p>
-					<p>Received: {recoveryDate.toLocaleDateString()}</p>
-				</div>
+					<div className="flex flex-col items-start justify-evenly mb-1">
+						<h3 className="text-lg font-semibold mb-1">Recovery</h3>
+						<p>Expected: {recovery?.expected}</p>
+						<p>Actual: {recovery?.actual}</p>
+						<p>Received: {recoveryDate.toLocaleDateString()}</p>
+					</div>
+				</ScrollArea>
 			</CardContent>
 			<CardFooter className="py-4">
 				<Badge variant="default">Case</Badge>

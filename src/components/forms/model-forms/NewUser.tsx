@@ -23,14 +23,14 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover"
 
-import { createDoc } from "@/lib/helpers"
+import { createDocument } from "@/app/actions"
 
 const formSchema = z.object({
 	info: z.object({
-		given_name: z.string().min(2),
-		family_name: z.string().min(2),
+		given_name: z.string().min(2, "First name must be at least 2 characters"),
+		family_name: z.string().min(2, "Last name must be at least 2 characters"),
 		email: z.string().email(),
-		phone: z.string().min(2),
+		phone: z.string().min(2, "Must enter a valid phone number"),
 		dob: z.date(),
 	}),
 	assets: z.object({
@@ -56,7 +56,7 @@ export function NewUser({ formSubmit }: { formSubmit: () => void }) {
 	})
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
-		createDoc("user", values)
+		createDocument("user", values)
 		formSubmit()
 	}
 

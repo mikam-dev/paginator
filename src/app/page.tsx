@@ -2,18 +2,22 @@
 import { useState, useEffect } from 'react'
 // npm assets
 import { format } from 'date-fns'
+import { Loader2Icon } from 'lucide-react'
 // helper functions
-import { getDocs } from '@/lib/helpers'
+import { getDocuments } from '@/app/actions'
 // ui components
-import { Header } from '@/components/display/Header';
-import { ModelSelect } from '@/components/settings/ModelSelect'
-import { Filters } from '@/components/settings/Filters'
-import { Pagination } from '@/components/settings/Pagination'
-import { Separator } from '@/components/ui/separator'
-import { SingleDoc } from '@/components/cards/SingleDoc'
 import { useToast } from '@/components/ui/use-toast'
+import { Separator } from '@/components/ui/separator'
+import { SingleDocument } from '@/components/cards/SingleDocument'
+import { Header } from '@/components/display/Header';
+import { ModelSelect } from '@/components/display/ModelSelect'
+import { Filters } from '@/components/display/Filters'
+import { Pagination } from '@/components/display/Pagination'
+
 
 export default function Page() {
+  // initial loading state
+  const [isLoading, setIsLoading] = useState(true);
   // pagination states
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,7 +25,7 @@ export default function Page() {
   // filter states
   const [pageSize, setPageSize] = useState(10);
   const [fromDate, setFromDate] = useState<Date | undefined>() // default to undefined to show all existing docs
-  const [toDate, setToDate] = useState<Date | undefined>(new Date()) // default to today
+  const [toDate, setToDate] = useState<Date | undefined>()
   const [model, setModel] = useState('case')
   // documents array state
   const [docs, setDocs] = useState([{}]);
@@ -29,26 +33,29 @@ export default function Page() {
   const { toast } = useToast()
 
   useEffect(() => {
-    retrieveDocs()
+    fetchDocuments()
   }, [model, currentPage, pageSize, fromDate, toDate, totalDocuments])
 
-  function retrieveDocs() {
-    const newerThan = fromDate ? format(fromDate, "yyyy-MM-dd") : undefined
-    const olderThan = toDate ? format(toDate, "yyyy-MM-dd") : undefined
-    try {
-      getDocs(model, currentPage, pageSize, olderThan, newerThan).then((res) => {
-        setDocs(res.data)
-        setTotalPages(res.totalPages)
-        setTotalDocuments(res.totalDocuments)
+  function fetchDocuments() {
+    const newerThan = fromDate ? format(fromDate, "yyyy-MM-dd") : undefined;
+    const olderThan = toDate ? format(toDate, "yyyy-MM-dd") : undefined;
 
-        console.log(res.data)
+    getDocuments(model, currentPage, pageSize, olderThan, newerThan)
+      .then((res) => {
+        setDocs(res.data);
+        setTotalPages(res.totalPages);
+        setTotalDocuments(res.totalDocuments);
+        setIsLoading(false);
       })
-    } catch (error) {
-      console.log(error)
-    }
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
   }
 
+  // event handlers
   function handleModelChange(newModel: string) {
+    setIsLoading(true);
     setModel(newModel);
     setCurrentPage(1);
   };
@@ -82,7 +89,7 @@ export default function Page() {
 
   function handleDelete() {
     setTotalDocuments(totalDocuments - 1)
-    retrieveDocs()
+    fetchDocuments()
   }
 
   function rangeOfPage() {
@@ -91,6 +98,7 @@ export default function Page() {
     return `${start} - ${end}`;
   }
 
+  // render component
   return (
     <main className="flex flex-col flex-1">
       <Header formSubmit={handleFormSubmit} />
@@ -126,14 +134,16 @@ export default function Page() {
               {rangeOfPage()} of {String(totalDocuments)} results
             </p> : <></>}
         </div>
-        <div className="w-full max-w-6xl grid grid-cols-1 px-8 py-4 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {docs ? docs.map((doc: {}) =>
-            <SingleDoc
-              onDelete={() => handleDelete()}
-              data={doc}
-              model={model} />
-          ) : <></>}
-        </div>
+
+        {isLoading ? (
+          <Loader2Icon className='animate-spin' />
+        ) : (
+          <div className="w-full max-w-6xl grid grid-cols-1 px-8 py-4 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {docs.map((doc, index) => (
+              <SingleDocument key={index} onDelete={() => handleDelete()} data={doc} model={model} />
+            ))}
+          </div>
+        )}
       </section>
     </main>
   )

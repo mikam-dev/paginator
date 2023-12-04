@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import {
 	ChevronLeftIcon,
 	ChevronRightIcon,
@@ -9,7 +9,6 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { Input } from "../ui/input";
-import { set } from "mongoose";
 
 interface PaginationProps {
 	currentPage: number;

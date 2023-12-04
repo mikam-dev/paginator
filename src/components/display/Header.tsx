@@ -1,7 +1,7 @@
 "use client"
-import { BookOpen } from 'lucide-react'
-import { CreateDocForm } from '../forms/CreateDoc'
 import Link from 'next/link'
+import { BookOpen } from 'lucide-react'
+import { CreateDocumentDialog } from '@/components/forms/CreateDocument'
 
 export function Header({ formSubmit }: { formSubmit: () => void }) {
 	return (
@@ -10,7 +10,7 @@ export function Header({ formSubmit }: { formSubmit: () => void }) {
 				<Link href="/">
 					<BookOpen className='w-8 h-8' />
 				</Link>
-				<CreateDocForm formSubmit={() => formSubmit()} />
+				<CreateDocumentDialog formSubmit={() => formSubmit()} />
 			</div>
 		</header>
 	)

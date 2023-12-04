@@ -13,7 +13,7 @@ import {
 import { X } from 'lucide-react'
 import { useToast } from "@/components/ui/use-toast"
 
-import { deleteDocument } from "@/lib/helpers"
+import { deleteDocument } from "@/app/actions"
 
 interface ConfirmDeleteProps {
 	model: string;

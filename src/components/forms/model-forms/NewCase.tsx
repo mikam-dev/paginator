@@ -24,32 +24,38 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover"
 
-import { createDoc } from "@/lib/helpers"
+import { createDocument } from "@/app/actions"
+import { formatPhoneNumber } from "@/lib/utils"
+import { formatZipCode } from "@/lib/utils"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
 
+// Client-side validation schema
 const formSchema = z.object({
 	client: z.object({
-		given_name: z.string().min(2),
-		family_name: z.string().min(2),
+		given_name: z.string().min(2, "First name must be at least 2 characters"),
+		family_name: z.string().min(2, "Last name must be at least 2 characters"),
 		email: z.string().email(),
-		phone: z.string().min(2),
+		phone: z.string().min(2, "Must enter a valid phone number"),
 		address: z.object({
-			line1: z.string().min(2),
+			line1: z.string().min(2, "Street address must be at least 2 characters"),
 			line2: z.string().optional(),
-			city: z.string().min(2),
-			state: z.string().min(2),
-			zip: z.string().min(2),
+			city: z.string().min(2, "City must be at least 2 characters"),
+			state: z.string().min(2, "State must be at least 2 characters"),
+			zip: z.string().min(5, "Zip code must be 5 digits"),
 		}),
 	}),
 	incident: z.object({
 		date: z.date(),
 		address: z.object({
-			line1: z.string().min(2),
+			line1: z.string().min(2, "Street address must be at least 2 characters"),
 			line2: z.string().optional(),
-			city: z.string().min(2),
-			state: z.string().min(2),
-			zip: z.string().min(2),
+			city: z.string().min(2, "City must be at least 2 characters"),
+			state: z.string().min(2, "State must be at least 2 characters"),
+			zip: z.string().min(5, "Zip code must be 5 digits"),
 		}),
-		details: z.string().min(2),
+		details: z.string().min(30, "Details must contain at least 30 characters"),
 	}),
 	recovery: z.object({
 		expected: z.number().gte(10000).lte(500000),
@@ -96,13 +102,15 @@ export function NewCase({ formSubmit }: { formSubmit: () => void }) {
 
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
-		createDoc("case", values)
+		createDocument("case", values)
 		formSubmit()
 	}
 
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+				{/* Client information */}
+				<Label className="text-lg font-semibold">Client Details</Label>
 				<FormField
 					control={form.control}
 					name="client.given_name"
@@ -149,7 +157,16 @@ export function NewCase({ formSubmit }: { formSubmit: () => void }) {
 						<FormItem>
 							<FormLabel>Phone</FormLabel>
 							<FormControl>
-								<Input type="phone" placeholder="800-123-4567" {...field} />
+								<Input
+									type="phone"
+									placeholder="(800) 123-4567"
+									{...form.register("client.phone")}
+									onChange={(e) => {
+										const formattedPhoneNumber = formatPhoneNumber(e.target.value);
+										e.target.value = formattedPhoneNumber; // Set the formatted value
+										form.setValue("client.phone", formattedPhoneNumber); // Update React Hook Form value
+									}}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -217,12 +234,23 @@ export function NewCase({ formSubmit }: { formSubmit: () => void }) {
 						<FormItem>
 							<FormLabel>Zip</FormLabel>
 							<FormControl>
-								<Input {...field} />
+								<Input
+									type="text"
+									{...form.register("client.address.zip")}
+									onChange={(e) => {
+										const formattedZipCode = formatZipCode(e.target.value);
+										e.target.value = formattedZipCode; // Set the formatted value
+										form.setValue("client.address.zip", formattedZipCode); // Update React Hook Form value
+									}}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
 					)}
 				/>
+				<Separator />
+				{/* Incident information */}
+				<Label className="text-lg font-semibold">Incident Details</Label>
 				<FormField
 					control={form.control}
 					name="incident.date"
@@ -326,7 +354,15 @@ export function NewCase({ formSubmit }: { formSubmit: () => void }) {
 						<FormItem>
 							<FormLabel>Zip</FormLabel>
 							<FormControl>
-								<Input {...field} />
+								<Input
+									type="text"
+									{...form.register("incident.address.zip")}
+									onChange={(e) => {
+										const formattedZipCode = formatZipCode(e.target.value);
+										e.target.value = formattedZipCode; // Set the formatted value
+										form.setValue("incident.address.zip", formattedZipCode); // Update React Hook Form value
+									}}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -339,12 +375,18 @@ export function NewCase({ formSubmit }: { formSubmit: () => void }) {
 						<FormItem>
 							<FormLabel>Details</FormLabel>
 							<FormControl>
-								<Input {...field} />
+								<Textarea
+									placeholder=""
+									{...field}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
 					)}
 				/>
+				<Separator />
+				{/* Recovery information */}
+				<Label className="text-lg font-semibold">Recovery Details</Label>
 				<FormField
 					control={form.control}
 					name="recovery.expected"
@@ -355,7 +397,7 @@ export function NewCase({ formSubmit }: { formSubmit: () => void }) {
 								<Input
 									type="number" {...field}
 									min={0}
-									maxLength={10}
+									maxLength={6}
 									onChange={(e) => {
 										const number = parseInt(e.target.value)
 										form.setValue("recovery.expected", number)
@@ -375,7 +417,7 @@ export function NewCase({ formSubmit }: { formSubmit: () => void }) {
 								<Input
 									type="number" {...field}
 									min={0}
-									maxLength={10}
+									maxLength={6}
 									onChange={(e) => {
 										const number = parseInt(e.target.value)
 										form.setValue("recovery.actual", number)
