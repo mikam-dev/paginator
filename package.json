@@ -34,6 +34,7 @@
 		"@types/node": "20.4.0",
 		"@types/react": "18.2.14",
 		"@types/react-dom": "18.2.6",
+		"@vercel/speed-insights": "^1.0.2",
 		"chalk": "^4.1.2",
 		"chance": "^1.1.11",
 		"class-variance-authority": "^0.7.0",
