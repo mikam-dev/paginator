@@ -75,25 +75,25 @@ export async function GET(
    * @param {number} newPage - The new page number to set in the URL.
    * @returns {string} The updated URL with the new page number.
    */
-    const createPaginationUrl = (newPage: number) => {
-      // Create a new URL object based on the current request URL
-      const url = new URL(request.url);
+  const createPaginationUrl = (newPage: number) => {
+    // Create a new URL object based on the current request URL
+    const url = new URL(request.url);
 
-      // Create an instance of URLSearchParams from the current URL's search parameters
-      const searchParams = new URLSearchParams(url.searchParams);
+    // Create an instance of URLSearchParams from the current URL's search parameters
+    const searchParams = new URLSearchParams(url.searchParams);
 
-      // Set the 'page' parameter to the new page number
-      searchParams.set('page', newPage.toString());
+    // Set the 'page' parameter to the new page number
+    searchParams.set('page', newPage.toString());
 
-      // Ensure 'count' parameter is set
-      searchParams.set('count', count.toString());
+    // Ensure 'count' parameter is set
+    searchParams.set('count', count.toString());
 
-      // Update the URL's search string with the modified search parameters
-      url.search = searchParams.toString();
+    // Update the URL's search string with the modified search parameters
+    url.search = searchParams.toString();
 
-      // Return the updated URL as a string
-      return url.toString();
-    };
+    // Return the updated URL as a string
+    return url.toString();
+  };
 
     const paginationLinks = {
       next: page < totalPages ? createPaginationUrl(page + 1) : null,
