@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 
 export function ConnectionIndicator() {
-	if (process.env.NODE_ENV === 'production') return null
+	// if (process.env.NODE_ENV === 'production') return null
 	const [isConnected, setIsConnected] = useState(false);
 
 	useEffect(() => {
